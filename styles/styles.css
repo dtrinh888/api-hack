@@ -1,0 +1,11 @@
+#movie-poster{
+  float: left;
+}
+
+#movie-title{
+  float: left;
+}
+
+.clear {
+  clear: both;
+}
