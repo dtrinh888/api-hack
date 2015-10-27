@@ -85,30 +85,27 @@ $(function(){
 		);
 	};
 
-	var topMovies = function(genre, movie){
-		var id = movie.results.id;
-		$.ajax({
-			url: 'http://api.themoviedb.org/3/discover/movie',
-			data: {
-				api_key: '990ba45b90f56c57b4e00a54fc773d8c',
-				sort_by: popularity.desc,
-				genres: {
-					id: 18,
-					name: "Drama"
-				}
-			},
-			success: function(movies) {
-				displayTopMovie(movies);
-			}
-		});
-	};
-	var displayTopMovie = function(movie){
-		$('#top-movies').html(
-			'<span id="topMovies-container">' +
-				'<div id="topMovies-poster">' +
-					'<img src="http://image.tmdb.org/t/p/w300' + movie.poster_path + '">' +
-				'</div>' +	
-			'</span>'
-		);
-	};
+	var topMovies = $('#top-movies');
+
+	$.ajax({
+		url: 'http://api.themoviedb.org/3/movie/popular',
+		data: {
+			api_key: '990ba45b90f56c57b4e00a54fc773d8c'
+		},
+		success: function(popMovies){
+			$.each(popMovies.results, function(index, movies){
+				topMovies.append(
+						'<div id="popMovies-container">' +
+							'<div id="top-thumbnail">' + 
+								'<img src="http://image.tmdb.org/t/p/w300' + movies.poster_path + '">' +
+							'</div>' + 
+							'<div id="top-title">' + 
+								movies.original_title +
+							'</div>' +
+						'</div>'	 		
+					);
+			});
+		}
+	});
+	
 });
