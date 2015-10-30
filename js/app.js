@@ -1,4 +1,5 @@
 $(function(){
+	const MY_API_KEY = '990ba45b90f56c57b4e00a54fc773d8c';
 	//search function using auto-complete method
 	$('#movie-search').autocomplete({
 		//request the api info, response to display auto-complete titles
@@ -8,7 +9,7 @@ $(function(){
 				//grabbed url from http://docs.themoviedb.apiary.io/#reference/search/searchmovie/get at /search/movie reference
 				url: 'http://api.themoviedb.org/3/search/movie',
 				data: {
-					api_key: '990ba45b90f56c57b4e00a54fc773d8c',
+					api_key: MY_API_KEY,
 					//required CGI escaped string parameter 
 
 					//-----where did term come from???
@@ -60,7 +61,7 @@ $(function(){
 				//grabs user movie by concatenating 
 				url: 'https://api.themoviedb.org/3/movie/' + id,
 				data: {
-					api_key: '990ba45b90f56c57b4e00a54fc773d8c'
+					api_key: MY_API_KEY
 				},
 				success: function(movie) {
 					displayMovie(movie);
@@ -85,27 +86,54 @@ $(function(){
 		);
 	};
 
-	var topMovies = $('#top-movies');
+	var genreList = [];
+	var list = $('.movie-genre');
 
 	$.ajax({
-		url: 'http://api.themoviedb.org/3/movie/popular',
+		url: 'http://api.themoviedb.org/3/genre/movie/list',
 		data: {
-			api_key: '990ba45b90f56c57b4e00a54fc773d8c'
+			api_key: MY_API_KEY
 		},
-		success: function(popMovies){
-			$.each(popMovies.results, function(index, movies){
-				topMovies.append(
-						'<div id="popMovies-container">' +
-							'<div id="top-thumbnail">' + 
-								'<img src="http://image.tmdb.org/t/p/w300' + movies.poster_path + '">' +
-							'</div>' + 
-							'<div id="top-title">' + 
-								movies.original_title +
-							'</div>' +
-						'</div>'	 		
+		success:function(genre) {
+			genreList = genre.genreList;
+			$.each(genreList, function(index, genre){
+				list.append(
+						'<option value="' + genre.id + '">' + genre.name + '</option>'
 					);
+			});
+
+		}
+	});
+	list.on('change', function(){
+		var id = $(this).val();
+		if (id != 0) {
+			$.ajax({
+				url: 'http://api.themoviedb.org/3/discover/movie',
+				data: {
+					api_key: MY_API_KEY,
+					sort_by: 'popularity.desc',
+					with_genres: id
+				},
+				success: function(popMovies) {
+					showTopMovies(popMovies.results);
+				}
 			});
 		}
 	});
-	
+	var showTopMovies = function(movies) {
+		$('.top-results').empty();
+		$.each(movies, function(index, value){
+			$('.top-results').append(
+				'<div class="popMovies-container">' +
+					'<div class=movie-poster">' +
+						'<img src="http://image.tmdb.org/t/p/w300' + value.poster_path + '">' +
+					'</div>' + 
+					'<div class="movie-content">' + 
+						value.original_title +
+					'</div>' +
+					'<div class="clear"></div>' +
+				'</div>'			
+			);
+		});
+	};
 });
