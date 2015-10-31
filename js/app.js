@@ -1,5 +1,4 @@
 $(function(){
-	const MY_API_KEY = '990ba45b90f56c57b4e00a54fc773d8c';
 	//search function using auto-complete method
 	$('#movie-search').autocomplete({
 		//request the api info, response to display auto-complete titles
@@ -9,7 +8,7 @@ $(function(){
 				//grabbed url from http://docs.themoviedb.apiary.io/#reference/search/searchmovie/get at /search/movie reference
 				url: 'http://api.themoviedb.org/3/search/movie',
 				data: {
-					api_key: MY_API_KEY,
+					api_key: '990ba45b90f56c57b4e00a54fc773d8c',
 					//required CGI escaped string parameter 
 
 					//-----where did term come from???
@@ -61,7 +60,7 @@ $(function(){
 				//grabs user movie by concatenating 
 				url: 'https://api.themoviedb.org/3/movie/' + id,
 				data: {
-					api_key: MY_API_KEY
+					api_key: '990ba45b90f56c57b4e00a54fc773d8c'
 				},
 				success: function(movie) {
 					displayMovie(movie);
@@ -92,7 +91,7 @@ $(function(){
 	$.ajax({
 		url: 'http://api.themoviedb.org/3/genre/movie/list',
 		data: {
-			api_key: MY_API_KEY
+			api_key: '990ba45b90f56c57b4e00a54fc773d8c'
 		},
 		success:function(genre) {
 			genreList = genre.genreList;
@@ -110,7 +109,7 @@ $(function(){
 			$.ajax({
 				url: 'http://api.themoviedb.org/3/discover/movie',
 				data: {
-					api_key: MY_API_KEY,
+					api_key: '990ba45b90f56c57b4e00a54fc773d8c',
 					sort_by: 'popularity.desc',
 					with_genres: id
 				},
