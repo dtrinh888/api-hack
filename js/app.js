@@ -48,19 +48,18 @@ $(function(){
 		//e grabs info of the /movie/{id}'s api
 		//ui for user to select movie
 		select: function(e, ui) {
-			//variable to grab the movie's id
-
-
+			//variable to grab the movie's id			
 			//-------where did item come from???
 			var id = ui.item.id;
 
+			$('.top-results').empty();
 
-			//-------when do we use .ajax and when to use .get??
 			$.ajax({
 				//grabs user movie by concatenating 
 				url: 'https://api.themoviedb.org/3/movie/' + id,
 				data: {
-					api_key: '990ba45b90f56c57b4e00a54fc773d8c'
+					api_key: '990ba45b90f56c57b4e00a54fc773d8c',
+					append_to_response: 'reviews, similar, rating, videos'
 				},
 				success: function(movie) {
 					console.log('movie', movie);
@@ -82,7 +81,8 @@ $(function(){
 						'<em>' + '"' + movie.tagline + '"' + '</em>' +
 					'</div>' +
 					'<div class="movie-title">' +
-						'<strong>' + 'Title: ' + '</strong>' + movie.original_title + '<br>' + 'Release Date: ' + movie.release_date +
+						'<strong>' + 'Title: ' + '</strong>' + movie.original_title + '<br>' + 
+						'<strong>' + 'Release Date: ' + '</strong>' + movie.release_date +
 					'</div>' +
 					'<div class="movie-overview">' + 
 						'<strong>' + 'Overview: ' + '</strong>' + movie.overview +
@@ -93,55 +93,6 @@ $(function(){
 		);
 	};
 
-	/*var genreList = [];
-	var list = $('.movie-genre');
-
-	$.ajax({
-		url: 'http://api.themoviedb.org/3/genre/movie/list',
-		data: {
-			api_key: '990ba45b90f56c57b4e00a54fc773d8c'
-		},
-		success: function(genre) {
-			genreList = genre.genres;
-			$.each(genreList, function(index, genre){
-				list.append(
-					'<option value=" ' + genre.id + '">' + genre.name + '</option>'
-				);
-			});
-		}
-	});
-	list.on('change', function(){
-		var id = $(this).val();
-		if (id != 0) {
-			$.ajax({
-				url: 'http://api.themoviedb.org/3/discover/movie',
-				data: {
-					api_key: '990ba45b90f56c57b4e00a54fc773d8c',
-					sort_by: 'popularity.desc',
-					with_genres: id
-				},
-				success: function(popMovies) {
-					showTopMovies(popMovies.results);
-				}
-			});
-		}
-	});
-	var showTopMovies = function(movies) {
-		$('.top-results').empty();
-		$.each(movies, function(index, value){
-			$('.top-results').append(
-				'<div class="popMovies-container">' +
-					'<div class=movie-poster">' +
-						'<img src="http://image.tmdb.org/t/p/w300' + value.poster_path + '">' +
-					'</div>' + 
-					'<div class="movie-content">' + 
-						value.original_title +
-					'</div>' +
-					'<div class="clear"></div>' +
-				'</div>'			
-			);
-		});
-	};*/
 	//---Creating drop down list to show top movies in each genre
 
 	//array to store all of genre's names
@@ -166,6 +117,7 @@ $(function(){
       //index parameter to grab each element of genreList array
       //genre is where values are stored, in this instance id, name are the values 
 	    $.each(genreList, function(index, genre){
+
 	      //function to append all values to $('.movie-genre') aka list
 	      list.append(
 	          //<option>'s value needs to be set to genre.id to grab id number when user selects genre from drop down box
@@ -180,6 +132,7 @@ $(function(){
 	//.on() method when user selects genre
 	//---- why change?
 	list.on('change', function(){
+	  $('#search-results').empty();
 	  //variable to store the value the user selects
 	  var id = $(this).val();
 	  console.log(id);
