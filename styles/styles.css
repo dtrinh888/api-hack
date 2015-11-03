@@ -34,12 +34,12 @@ body{
   padding-left: 10px;
   width: 650px;
 }
-
 .clear {
   clear: both;
 }
 #search-container, #top-movies {
 	padding: 10px 10px 10px 10px;
+	float: left;
 }
 #search-results{
 	padding-top: 10px;

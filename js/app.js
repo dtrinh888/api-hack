@@ -1,4 +1,20 @@
 $(function(){
+	
+	var clearResults = $('.search-results, .top-results');
+
+	$('.top.results').load(function(){
+		$.ajax({
+			url: 'http://api.themoviedb.org/3/movie/top_rated',
+			data: {
+				api_key: '990ba45b90f56c57b4e00a54fc773d8c'
+			},
+			success: function(topRatedMovies) {
+				console.log('top', topRatedMovies);
+				displayMovies(topRatedMovies.original_title);
+			} 
+		});
+	});
+
 	//search function using auto-complete method
 	$('#movie-search').autocomplete({
 		//request the api info, response to display auto-complete titles
@@ -59,7 +75,7 @@ $(function(){
 				url: 'https://api.themoviedb.org/3/movie/' + id,
 				data: {
 					api_key: '990ba45b90f56c57b4e00a54fc773d8c',
-					append_to_response: 'reviews, similar, rating, videos'
+					append_to_response: 'reviews,similar,rating,videos'
 				},
 				success: function(movie) {
 					console.log('movie', movie);
@@ -68,9 +84,38 @@ $(function(){
 			});
 		}
 	});
+	
+	$('#search-container').submit(function(){
+		event.preventDefault();
+		var movieSearch = $('#movie-search').val();
+		
+		if(movieSearch === ''){
+			console.log('Must enter a value');
+			return;
+		} else {
+			$.ajax({
+				url: 'http://api.themoviedb.org/3/search/movie',
+				data: {
+					api_key: '990ba45b90f56c57b4e00a54fc773d8c',
+					query: movieSearch
+				},
+				success: function(movies) {
+					clearResults.empty();
+					console.log(movies);
+					displayMovies(movies.results);
+				}	
+			});
+		}	
+	});
 
 	var displayMovie = function(movie) {
-		$('#search-results').html(
+		console.log('mov', movie);
+		var similarMovies = '';
+		$.each(movie.similar.results, function(index, similarMovie){
+			similarMovies += '<span class="similar-movies">' + similarMovie.original_title + '</span>';
+		});
+		var topMovies = 
+		$('.search-results').html(
 			'<span class="movie-container">' +
 				'<h1>Movie Search</h1>' +
 				'<div class="movie-poster">' +
@@ -88,7 +133,8 @@ $(function(){
 						'<strong>' + 'Overview: ' + '</strong>' + movie.overview +
 					'</div>' +
 				'</div>' +	
-				'<div class="clear"></div>' +
+				'<div class="clear"></div>' + 
+				similarMovies +
 			'</span>'
 		);
 	};
@@ -132,7 +178,7 @@ $(function(){
 	//.on() method when user selects genre
 	//---- why change?
 	list.on('change', function(){
-	  $('#search-results').empty();
+	  $('.search-results').empty();
 	  //variable to store the value the user selects
 	  var id = $(this).val();
 	  console.log(id);
@@ -151,14 +197,14 @@ $(function(){
       			with_genres: id
       		},
       		success: function(popMovies){
-      			showTopMovies(popMovies.results);				
+      			displayMovies(popMovies.results);				
 	      	}
     	});
 	  }
 	});
 
-	var showTopMovies = function(movies) {
-	  console.log(movies);
+	var displayMovies = function(movies) {
+	  console.log('movies', movies);
 	    $('.top-results').empty();
 		  $.each(movies, function(index, value){
 	  		$('.top-results').append(
