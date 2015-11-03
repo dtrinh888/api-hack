@@ -1,11 +1,44 @@
-#movie-poster{
+html{
+	background-color: black;
+}
+body{
+	background-color: black;
+
+	font-family: arial;
+}
+.nav-container{
+	width: 1000px;
+	color: white;
+	margin: 0 auto;
+	text-align: center;
+}
+.container{
+	width: 1000px;
+	margin: 0 auto;
+	background-color: white;
+}
+.movie-poster{
   float: left;
+  border: 1px solid red;
 }
 
-#movie-title{
+.movie-content{
   float: left;
+  border: 1px solid red;
+  padding-left: 10px;
+  width: 650px;
 }
 
 .clear {
   clear: both;
 }
+#search-container, #top-movies {
+	padding: 10px 10px 10px 10px;
+}
+#search-results{
+	padding-top: 10px;
+}
+.top results {
+	padding: 10px 10px 10px 10px;
+}
+

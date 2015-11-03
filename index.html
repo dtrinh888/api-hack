@@ -7,21 +7,26 @@
 	<!-- jQuery UI Library needed for auto-complete search function -->
     <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/themes/smoothness/jquery-ui.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.js"></script>
-	<script type="text/javascript" src="js/app.js"></script>
-	<style type="text/css" src="styles/styles.css"></style>
+	  <script type="text/javascript" src="js/app.js"></script>
+	  <link rel="stylesheet" type="text/css" href="styles/styles.css">
 </head>
 <body>
-	<form id="search-container">
-		<input id="movie-search" />
-		<input type="submit" id="search-btn" />
-
-	</form>
-	<div id="search-results"></div>
-	<div id="top-movies">
-		<select id="movie-genre">
-			<option value=0>Select Genre for Top Movies</option>
-		</select>
+	<nav class="nav-container">
+		<h1>Movie Finder</h1>
+	</nav>
+	<div class="container">
+		<form id="search-container">
+			<input id="movie-search" />
+			<input type="submit" id="search-btn" />
+		</form>
+		
+		<div id="top-movies">
+			<select class="movie-genre">
+			  <option value=0>Select Genre for Top Movies</option>
+			</select>
+			<div id="search-results"></div>
+			<div class="top-results"></div>
+		</div>
 	</div>
-	<div class="top-results"></div>
 </body>
 </html>	

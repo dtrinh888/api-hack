@@ -63,6 +63,7 @@ $(function(){
 					api_key: '990ba45b90f56c57b4e00a54fc773d8c'
 				},
 				success: function(movie) {
+					console.log('movie', movie);
 					displayMovie(movie);
 				}
 			});
@@ -71,13 +72,20 @@ $(function(){
 
 	var displayMovie = function(movie) {
 		$('#search-results').html(
-			'<span id="movie-container">' +
-				'<div id="movie-poster">' +
-					'<img src="http://image.tmdb.org/t/p/w300' + movie.poster_path + '">' +
+			'<span class="movie-container">' +
+				'<h1>Movie Search</h1>' +
+				'<div class="movie-poster">' +
+					'<a href="' + movie.homepage +'">' + '<img src="http://image.tmdb.org/t/p/w300' + movie.poster_path + '">' + '</a>' +
 				'</div>' +
-				'<div id="movie-content">' +
-					'<div id="movie-title">' +
-						movie.original_title +
+				'<div class="movie-content">' +
+					'<div class="movie-tagline">' + 
+						'<em>' + '"' + movie.tagline + '"' + '</em>' +
+					'</div>' +
+					'<div class="movie-title">' +
+						'<strong>' + 'Title: ' + '</strong>' + movie.original_title + '<br>' + 'Release Date: ' + movie.release_date +
+					'</div>' +
+					'<div class="movie-overview">' + 
+						'<strong>' + 'Overview: ' + '</strong>' + movie.overview +
 					'</div>' +
 				'</div>' +	
 				'<div class="clear"></div>' +
@@ -85,7 +93,7 @@ $(function(){
 		);
 	};
 
-	var genreList = [];
+	/*var genreList = [];
 	var list = $('.movie-genre');
 
 	$.ajax({
@@ -93,14 +101,13 @@ $(function(){
 		data: {
 			api_key: '990ba45b90f56c57b4e00a54fc773d8c'
 		},
-		success:function(genre) {
-			genreList = genre.genreList;
+		success: function(genre) {
+			genreList = genre.genres;
 			$.each(genreList, function(index, genre){
 				list.append(
-						'<option value="' + genre.id + '">' + genre.name + '</option>'
-					);
+					'<option value=" ' + genre.id + '">' + genre.name + '</option>'
+				);
 			});
-
 		}
 	});
 	list.on('change', function(){
@@ -134,5 +141,84 @@ $(function(){
 				'</div>'			
 			);
 		});
+	};*/
+	//---Creating drop down list to show top movies in each genre
+
+	//array to store all of genre's names
+	var genreList = [];
+	//variable to call class movie-genre 
+	var list = $('.movie-genre');
+	
+	//retrieve genre names from API 
+	$.ajax({
+	  //API url where all the genre names are stored
+	  url: 'http://api.themoviedb.org/3/genre/movie/list',
+	  data: {
+	    api_key: '990ba45b90f56c57b4e00a54fc773d8c'
+	  },
+	  //genre parameter is where genre's objects name value is stored
+	  success: function(genre){
+	    console.log('genre', genre);
+	    //store genre names to genreList array
+      genreList = genre.genres;
+      
+      //.each is to loop through genreList to append all names into drop down box
+      //index parameter to grab each element of genreList array
+      //genre is where values are stored, in this instance id, name are the values 
+	    $.each(genreList, function(index, genre){
+	      //function to append all values to $('.movie-genre') aka list
+	      list.append(
+	          //<option>'s value needs to be set to genre.id to grab id number when user selects genre from drop down box
+	          //genre.name to display genre name inside the drop down box
+	          '<option value=" '+ genre.id +'">' + genre.name + '</option>'
+	        );
+	    });
+	  }
+	});
+	
+	//function to display top movies for each genre
+	//.on() method when user selects genre
+	//---- why change?
+	list.on('change', function(){
+	  //variable to store the value the user selects
+	  var id = $(this).val();
+	  console.log(id);
+	  //set first option value to 0 in HTML so that it defaults to 'Select Genre for Top Movies' 
+	  //...so that nothing is displayed until user selects a specific genre
+	  //if statement that when id is not equal to 0 display genre id that user selects
+	  //did not use !== because option value of 0 is string in html if using !==
+	  //...the statement would only be true if 0 is not an integer and string
+	  if (id != 0){
+	    //
+	    $.ajax({
+      		url: 'http://api.themoviedb.org/3/discover/movie',
+      		data: {
+      			api_key: '990ba45b90f56c57b4e00a54fc773d8c',
+      			sort_by: 'popularity.desc',
+      			with_genres: id
+      		},
+      		success: function(popMovies){
+      			showTopMovies(popMovies.results);				
+	      	}
+    	});
+	  }
+	});
+
+	var showTopMovies = function(movies) {
+	  console.log(movies);
+	    $('.top-results').empty();
+		  $.each(movies, function(index, value){
+	  		$('.top-results').append(
+	  			'<div class="popMovies-container">' +
+	  				'<div class="movie-poster">' + 
+	  					'<img src="http://image.tmdb.org/t/p/w300' + value.poster_path + '">' +
+	  				'</div>' + 
+	  				'<div class="movie-content">' + 
+	  					value.original_title +
+	  				'</div>' +
+	  				'<div class="clear"></div>' +
+	  			'</div>'	 		
+	  		);
+	    });
 	};
 });
