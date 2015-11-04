@@ -2,17 +2,15 @@ $(function(){
 	
 	var clearResults = $('.search-results, .top-results');
 
-	$('.top.results').load(function(){
-		$.ajax({
-			url: 'http://api.themoviedb.org/3/movie/top_rated',
-			data: {
-				api_key: '990ba45b90f56c57b4e00a54fc773d8c'
-			},
-			success: function(topRatedMovies) {
-				console.log('top', topRatedMovies);
-				displayMovies(topRatedMovies.original_title);
-			} 
-		});
+	$.ajax({
+		url: 'http://api.themoviedb.org/3/movie/top_rated',
+		data: {
+			api_key: '990ba45b90f56c57b4e00a54fc773d8c'
+		},
+		success: function(topRatedMovies) {
+			console.log('top',topRatedMovies);
+			displayMovies(topRatedMovies.results);
+		} 
 	});
 
 	//search function using auto-complete method
@@ -205,6 +203,7 @@ $(function(){
 
 	var displayMovies = function(movies) {
 	  console.log('movies', movies);
+	  var topRatedMovies = 
 	    $('.top-results').empty();
 		  $.each(movies, function(index, value){
 	  		$('.top-results').append(
