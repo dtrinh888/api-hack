@@ -2,16 +2,22 @@ $(function(){
 	
 	var clearResults = $('.search-results, .top-results');
 
-	$.ajax({
-		url: 'http://api.themoviedb.org/3/movie/top_rated',
-		data: {
-			api_key: '990ba45b90f56c57b4e00a54fc773d8c'
-		},
-		success: function(topRatedMovies) {
-			console.log('top',topRatedMovies);
-			displayMovies(topRatedMovies.results);
-		} 
-	});
+	var getHomePage = function(){
+		$.ajax({
+			url: 'http://api.themoviedb.org/3/movie/top_rated',
+			data: {
+				api_key: '990ba45b90f56c57b4e00a54fc773d8c'
+			},
+			success: function(topRatedMovies) {
+				console.log('top',topRatedMovies);
+				displayMoviesInline(topRatedMovies.results);
+			} 
+		});
+	};	
+
+	getHomePage();
+
+	$('.nav-container h1').on('click', getHomePage);
 
 	//search function using auto-complete method
 	$('#movie-search').autocomplete({
@@ -109,11 +115,15 @@ $(function(){
 	var displayMovie = function(movie) {
 		console.log('mov', movie);
 		var similarMovies = '';
+		movie.similar.results = movie.similar.results.slice(0, 10);
 		$.each(movie.similar.results, function(index, similarMovie){
-			similarMovies += '<span class="similar-movies">' + similarMovie.original_title + '</span>';
-		});
+			similarMovies += 
+						'<span class="similar-movies">' + 
+							'<img src="http://image.tmdb.org/t/p/w300' + similarMovie.poster_path + '" data-id="' + similarMovie.id + '">' + 
+						'</span>';
+						});
 		var topMovies = 
-		$('.search-results').html(
+		$('.top-results').html(
 			'<span class="movie-container">' +
 				'<h1>Movie Search</h1>' +
 				'<div class="movie-poster">' +
@@ -132,6 +142,7 @@ $(function(){
 					'</div>' +
 				'</div>' +	
 				'<div class="clear"></div>' + 
+				'<h2>Similar Movies to ' + movie.original_title + '</h2>' +
 				similarMovies +
 			'</span>'
 		);
@@ -176,7 +187,7 @@ $(function(){
 	//.on() method when user selects genre
 	//---- why change?
 	list.on('change', function(){
-	  $('.search-results').empty();
+	  clearResults.empty();
 	  //variable to store the value the user selects
 	  var id = $(this).val();
 	  console.log(id);
@@ -201,10 +212,27 @@ $(function(){
 	  }
 	});
 
+	$('.top-results').on('click', '.topMovies-poster img, .similar-movies img', function(){
+		console.log($(this).data('id'));
+		var movieID = $(this).data('id');	
+		clearResults.empty();
+		$.ajax({
+			//grabs user movie by concatenating 
+			url: 'https://api.themoviedb.org/3/movie/' + movieID,
+			data: {
+				api_key: '990ba45b90f56c57b4e00a54fc773d8c',
+				append_to_response: 'reviews,similar,rating,videos'
+			},
+			success: function(movie) {
+				console.log('movie', movie);
+				displayMovie(movie);
+			}
+		});
+	});
+
 	var displayMovies = function(movies) {
 	  console.log('movies', movies);
-	  var topRatedMovies = 
-	    $('.top-results').empty();
+	    clearResults.empty();
 		  $.each(movies, function(index, value){
 	  		$('.top-results').append(
 	  			'<div class="popMovies-container">' +
@@ -218,5 +246,17 @@ $(function(){
 	  			'</div>'	 		
 	  		);
 	    });
+	};
+
+	var displayMoviesInline = function(movies){
+		clearResults.empty();
+		$.each(movies, function(index, topMovies){
+			$('.top-results').append(
+				'<span class="topMovies-poster">' +
+					'<img src="http://image.tmdb.org/t/p/w300' + topMovies.poster_path + '" data-id="'+ topMovies.id + '">' +
+				'</span>'
+			);
+			console.log(topMovies.poster_path);
+		});
 	};
 });
