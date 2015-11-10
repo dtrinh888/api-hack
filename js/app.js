@@ -1,6 +1,6 @@
 $(function(){
 	
-	var clearResults = $('.search-results, .top-results');
+	var clearResults = $('.search-results, .top-results, .top-container');
 
 	var getHomePage = function(){
 		$.ajax({
@@ -90,6 +90,7 @@ $(function(){
 	});
 	
 	$('#search-container').submit(function(){
+		clearResults.empty();
 		event.preventDefault();
 		var movieSearch = $('#movie-search').val();
 		
@@ -113,6 +114,7 @@ $(function(){
 	});
 
 	var displayMovie = function(movie) {
+		clearResults.empty();
 		console.log('mov', movie);
 		var similarMovies = '';
 		movie.similar.results = movie.similar.results.slice(0, 10);
@@ -166,8 +168,7 @@ $(function(){
 	  success: function(genre){
 	    console.log('genre', genre);
 	    //store genre names to genreList array
-      genreList = genre.genres;
-      
+     	genreList = genre.genres;
       //.each is to loop through genreList to append all names into drop down box
       //index parameter to grab each element of genreList array
       //genre is where values are stored, in this instance id, name are the values 
@@ -234,6 +235,7 @@ $(function(){
 	  console.log('movies', movies);
 	    clearResults.empty();
 		  $.each(movies, function(index, value){
+		  	
 	  		$('.top-results').append(
 	  			'<div class="popMovies-container">' +
 	  				'<div class="movie-poster">' + 
@@ -251,12 +253,24 @@ $(function(){
 	var displayMoviesInline = function(movies){
 		clearResults.empty();
 		$.each(movies, function(index, topMovies){
+			$('.top-container').html(
+				'<h1>Popular Movies</h1>'
+			);
 			$('.top-results').append(
 				'<span class="topMovies-poster">' +
 					'<img src="http://image.tmdb.org/t/p/w300' + topMovies.poster_path + '" data-id="'+ topMovies.id + '">' +
 				'</span>'
 			);
 			console.log(topMovies.poster_path);
+		});
+	};
+	var genreTitle = function(genre){
+		clearResults.empty();
+		$.each(genre, function(i, genreName){
+			$('.top-container').html(
+		  		'<h1>Top ' + genreName.name + ' Movies'
+		  	);
+		console.log('a', genreName.name);
 		});
 	};
 });
