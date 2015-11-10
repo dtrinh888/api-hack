@@ -53,13 +53,13 @@ body{
 	padding-top: 10px;
 }
 .topMovies-poster {
-	width: 33%;
+	width: 20%;
 	display: inline-block;
 }
 .topMovies-poster img{
 	cursor: pointer;
 	height: 250px;
-	width: 165px;
+	width: 185px;
 }
 .similar-movies {
 	width: 9%;
